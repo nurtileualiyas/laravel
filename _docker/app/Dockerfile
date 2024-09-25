@@ -1,9 +1,6 @@
 # Use the official PHP 8.1 FPM base image
 FROM php:8.3-fpm
 
-ENV http_proxy=http://task:hSPCoZ1RCUOKLnDjtrw6@proxy.almatv.kz:3128
-ENV https_proxy=http://task:hSPCoZ1RCUOKLnDjtrw6@proxy.almatv.kz:3128
-
 # Update package lists and install necessary packages
 RUN apt-get update && apt-get install -y \
     apt-utils \
