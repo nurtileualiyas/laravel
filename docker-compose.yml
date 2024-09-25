@@ -27,6 +27,16 @@ services:
     container_name: laravel_app
     networks:
       - laravel_network
+    command: >
+      sh -c "
+      if [ ! -f /var/www/laravel/vendor/autoload.php ]; then
+        composer install --no-interaction --optimize-autoloader;
+      fi &&
+      if [ ! -f /var/www/laravel/.env ]; then
+        cp .env.example .env && php artisan key:generate;
+      fi &&
+      php-fpm
+      "
 
   # db:
   #   image: mysql:9.0
@@ -42,4 +52,3 @@ services:
   #   container_name: laravel_db
   #   networks:
   #     - laravel_network
-

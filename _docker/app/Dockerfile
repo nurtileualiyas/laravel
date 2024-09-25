@@ -19,9 +19,6 @@ RUN apt-get update && apt-get install -y \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-# Install Redis extension
-RUN pecl install redis && docker-php-ext-enable redis
-
 # Copy custom PHP configuration
 COPY ./_docker/app/php.ini /usr/local/etc/php/conf.d/php.ini
 
@@ -36,6 +33,9 @@ COPY . /var/www/laravel
 #     apt-get install -y nodejs && \
 #     apt-get clean && \
 #     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+# # Set proper permissions for storage and bootstrap/cache
+# RUN chown -R www-data:www-data /var/www/laravel/storage /var/www/laravel/bootstrap/cache
 
 # Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
@@ -57,6 +57,13 @@ RUN php artisan key:generate
 
 # # Build assets if necessary
 # RUN npm run build
+
+# Copy entrypoint script
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+# Set the entrypoint
+ENTRYPOINT ["entrypoint.sh"]
 
 # Expose port 9000 and start PHP-FPM server
 EXPOSE 9000
